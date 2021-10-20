@@ -1,14 +1,13 @@
 package com.practice.CabBookingSystem.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Location {
@@ -23,9 +22,8 @@ public class Location {
 	@NotNull(message = "Longitude should not be blank")
 	private Double longitude;
 
-	@OneToOne
-	@JsonIgnore
-	@JoinColumn(name = "driver_id", referencedColumnName = "id")
+	@OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "driver_id", nullable = false)
 	private Driver driver;
 
 	public int getId() {

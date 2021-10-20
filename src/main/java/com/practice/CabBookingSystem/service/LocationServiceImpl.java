@@ -17,12 +17,6 @@ public class LocationServiceImpl implements LocationService {
 	private LocationRepository locationRepository;
 
 	@Override
-	public void addLocation(Location location) {
-		locationRepository.save(location);
-		
-	}
-
-	@Override
 	public List<AvailableCabs> getAllAvaliableCabsLocations(Location location) {
 		Iterable<Location> locations = locationRepository.findAll();
 		List<Location> loc = new ArrayList<>();
@@ -30,31 +24,31 @@ public class LocationServiceImpl implements LocationService {
 		return findNearestCabs(loc, location);
 	}
 	
-	static List<AvailableCabs> findNearestCabs(List<Location> locations, Location inputLocation) {
+	static List<AvailableCabs> findNearestCabs(List<Location> locations, Location passengerLocation) {
 		List<AvailableCabs> availableCabs = new ArrayList<>();
-		for(Location location: locations ) {
+		for(Location driverLocation: locations ) {
 			AvailableCabs availableCab = new AvailableCabs();
 			// distance between latitudes and longitudes
-			double dLatitude = Math.toRadians(location.getLatitude() - inputLocation.getLatitude());
-			double dLongitude = Math.toRadians(location.getLongitude() - inputLocation.getLongitude());
+			double dLatitude = Math.toRadians(driverLocation.getLatitude() - passengerLocation.getLatitude());
+			double dLongitude = Math.toRadians(driverLocation.getLongitude() - passengerLocation.getLongitude());
 			
 			// convert to radians
-	        double inputLatitude = Math.toRadians(inputLocation.getLatitude());
-	        double latitude = Math.toRadians(location.getLatitude());
+	        double passengerLatitude = Math.toRadians(passengerLocation.getLatitude());
+	        double driverLatitude = Math.toRadians(driverLocation.getLatitude());
 	        
 	        // apply formulae
 	        double a = Math.pow(Math.sin(dLatitude / 2), 2) + 
 	                   Math.pow(Math.sin(dLongitude / 2), 2) * 
-	                   Math.cos(inputLatitude) * 
-	                   Math.cos(latitude);
+	                   Math.cos(passengerLatitude) * 
+	                   Math.cos(driverLatitude);
 	        double rad = 6371;
 	        double c = 2 * Math.asin(Math.sqrt(a));
 	        double distance = rad * c;
 	        
 	        if(distance <= 4) {
-	        	availableCab.setName(location.getDriver().getName());
-	        	availableCab.setPhoneNumber(location.getDriver().getPhoneNumber());
-	        	availableCab.setCarNumber(location.getDriver().getCarNumber());
+	        	availableCab.setName(driverLocation.getDriver().getName());
+	        	availableCab.setPhoneNumber(driverLocation.getDriver().getPhoneNumber());
+	        	availableCab.setCarNumber(driverLocation.getDriver().getCarNumber());
 	        	availableCabs.add(availableCab);
 	        }
 		}

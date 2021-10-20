@@ -1,14 +1,18 @@
 package com.practice.CabBookingSystem.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -28,7 +32,7 @@ public class Driver {
 	
 	@NotBlank(message = "Phone Number should not be blank")
 	@JsonProperty("phone_number")
-	@Column(unique = true)
+	@Column(unique = true, columnDefinition = "BIGINT")
 	@Pattern(regexp="(^$|[0-9]{10})", message = "Phone Number should be numbers and of 10 digits")
 	private String phoneNumber;
 	
@@ -41,6 +45,10 @@ public class Driver {
 	@JsonProperty("car_number")
 	@Column(unique = true)
 	private String carNumber;
+	
+	@OneToOne(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Location location;
 	
 	public int getId() {
 		return id;
@@ -88,6 +96,14 @@ public class Driver {
 
 	public void setCarNumber(String carNumber) {
 		this.carNumber = carNumber;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 	
 }

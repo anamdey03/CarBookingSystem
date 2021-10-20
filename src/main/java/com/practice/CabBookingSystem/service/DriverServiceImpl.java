@@ -23,5 +23,4 @@ public class DriverServiceImpl implements DriverService {
 	public Optional<Driver> getDriver(Integer id) {
 		return driverRepository.findById(id);
 	}
-
 }
